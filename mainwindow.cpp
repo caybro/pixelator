@@ -22,19 +22,15 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(m_ui->actionSave, &QAction::triggered, this, &MainWindow::onSaveFile);
     connect(m_ui->spRed, QOverload<int>::of(&QSpinBox::valueChanged), [this]() {
         m_ui->btnApply->setEnabled(true);
-        m_ui->btnApplyAll->setEnabled(true);
     });
     connect(m_ui->spGreen, QOverload<int>::of(&QSpinBox::valueChanged), [this]() {
         m_ui->btnApply->setEnabled(true);
-        m_ui->btnApplyAll->setEnabled(true);
     });
     connect(m_ui->spBlue, QOverload<int>::of(&QSpinBox::valueChanged), [this]() {
         m_ui->btnApply->setEnabled(true);
-        m_ui->btnApplyAll->setEnabled(true);
     });
     connect(m_ui->spAlpha, QOverload<int>::of(&QSpinBox::valueChanged), [this]() {
         m_ui->btnApply->setEnabled(true);
-        m_ui->btnApplyAll->setEnabled(true);
     });
 
     connect(m_ui->btnApply, &QPushButton::clicked, this, &MainWindow::onApplyClicked);
@@ -82,6 +78,11 @@ void MainWindow::changeEvent(QEvent *e)
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
+    if (!isWindowModified()) {
+        event->accept();
+        return;
+    }
+
     auto ret = QMessageBox::question(this, tr("Picture Modified"), tr("Do you want to save the modified picture?"),
                                      QMessageBox::Yes|QMessageBox::No|QMessageBox::Cancel);
     if (ret == QMessageBox::Yes) {
